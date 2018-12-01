@@ -4,5 +4,5 @@
 
 
 ## nim compiles
-nim compile --run <FILE>
-nim c -d:release <FILE>
+nim compile --run
+nim c -d:release 
