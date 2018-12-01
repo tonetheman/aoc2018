@@ -49,6 +49,38 @@ func stringsToInts(s []string) []int {
 	return res
 }
 
+func part1(a []int) int {
+	freq := 0
+	for _, val := range a {
+		freq += val
+	}
+	return freq
+}
+
+func part2(a []int) int {
+	index := 0
+	freq := 0
+	m := make(map[int]bool)
+	m[freq] = true
+	for {
+		val := a[index]
+		freq += val
+		// check if the value is there
+		_, ok := m[freq]
+		if ok {
+			fmt.Println("dup", freq)
+			break
+		} else {
+			m[freq] = true
+		}
+		index++
+		if index >= len(a) {
+			index = 0
+		}
+	}
+	return 0
+}
+
 func main() {
 	for i := 0; i < 10; i++ {
 		fmt.Println(h(int64(i)) % 63)
@@ -68,4 +100,6 @@ func main() {
 	fmt.Println(data)
 	idata := stringsToInts(data)
 	fmt.Println(idata)
+	fmt.Println(part1(idata))
+	fmt.Println(part2(idata))
 }
