@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -57,17 +58,37 @@ func part1(a []int) int {
 	return freq
 }
 
+func savefreq(m map[int]bool) {
+	outf, err := os.Create("freq.txt")
+	if err != nil {
+		fmt.Println("could not open file")
+	}
+	for k, _ := range m {
+		fmt.Fprintf(outf, "%d\n", k)
+	}
+	outf.Close()
+}
+
 func part2(a []int) int {
 	index := 0
 	freq := 0
 	m := make(map[int]bool)
 	m[freq] = true
+	max := -10000000
+	min := 99999999
 	for {
 		val := a[index]
 		freq += val
+		if freq > max {
+			max = freq
+		}
+		if freq < min {
+			min = freq
+		}
 		// check if the value is there
 		_, ok := m[freq]
 		if ok {
+			fmt.Println("number of uniq", len(m))
 			fmt.Println("dup", freq)
 			break
 		} else {
@@ -78,6 +99,10 @@ func part2(a []int) int {
 			index = 0
 		}
 	}
+	savefreq(m)
+
+	fmt.Println("min freq", min)
+	fmt.Println("max freq", max)
 	return 0
 }
 
