@@ -130,10 +130,29 @@ func part2(fdata []string) {
 		//fmt.Println(v1, v2, countDiffs(v1, v2))
 		if countDiffs(v1, v2) == 1 {
 			fmt.Println("FOUND", v1, v2)
-			showCommon(v1, v2)
+			//showCommon(v1, v2)
 		}
 		if index > len(fdata)-1 {
 			break
+		}
+	}
+}
+
+func part2correct(fdata []string) {
+	fmt.Println("starting part2")
+
+	for i := 0; i < len(fdata); i++ {
+		for j := 0; j < len(fdata); j++ {
+			if i == j {
+				continue
+			}
+			v1 := fdata[i]
+			v2 := fdata[j]
+			fmt.Println("cmp", i, j, v1, v2)
+			if countDiffs(v1, v2) == 1 {
+				fmt.Println("FOUND", v1, v2)
+				showCommon(v1, v2)
+			}
 		}
 	}
 }
@@ -142,5 +161,5 @@ func main() {
 	fdata := split(bytesToString(readfile("day2data.txt")))
 	sort.Strings(fdata)
 	//fmt.Println(fdata)
-	part2(fdata)
+	part2correct(fdata)
 }
