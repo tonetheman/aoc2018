@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"sort"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -43,8 +43,12 @@ func bytesToString(buffer []byte) string {
 }
 
 func split(s string) []string {
-	// might be specific to DOS
-	return strings.Split(s, "\n")
+	if runtime.GOOS == "windows" {
+		// might be specific to DOS
+		return strings.Split(s, "\r\n")
+	} else {
+		return strings.Split(s, "\n")
+	}
 }
 
 func parse2(s string) bool {
@@ -111,6 +115,7 @@ func countDiffs(v1, v2 string) int {
 }
 
 func showCommon(v1, v2 string) {
+	fmt.Println("showcommond")
 	for i, c := range v1 {
 		if c == rune(v2[i]) {
 			fmt.Printf("%c", c)
@@ -144,11 +149,15 @@ func part2correct(fdata []string) {
 	for i := 0; i < len(fdata); i++ {
 		for j := 0; j < len(fdata); j++ {
 			if i == j {
+				//fmt.Println("matched not doing anything...")
 				continue
 			}
+			//fmt.Println("working on", i, j)
 			v1 := fdata[i]
+			//fmt.Println("after v1")
 			v2 := fdata[j]
-			fmt.Println("cmp", i, j, v1, v2)
+			//fmt.Println("after v2")
+			//fmt.Println(" datum are", v1, v2)
 			if countDiffs(v1, v2) == 1 {
 				fmt.Println("FOUND", v1, v2)
 				showCommon(v1, v2)
@@ -159,7 +168,7 @@ func part2correct(fdata []string) {
 
 func main() {
 	fdata := split(bytesToString(readfile("day2data.txt")))
-	sort.Strings(fdata)
+	//sort.Strings(fdata)
 	//fmt.Println(fdata)
 	part2correct(fdata)
 }
