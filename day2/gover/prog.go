@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -88,10 +89,58 @@ func count(ss []string) int {
 	return twocount * threecount
 }
 
-func main() {
+func part1() {
 	fdata := split(bytesToString(readfile("day2data.txt")))
 
 	//ss := []string{"abcdef", "bababc", "abbcde", "abcccd", "aabcdd", "abcdee", "ababab"}
 	res := count(fdata)
 	fmt.Println("res", res)
+
+}
+
+func countDiffs(v1, v2 string) int {
+	diffcount := 0
+	for i, c := range v1 {
+		if c == rune(v2[i]) {
+
+		} else {
+			diffcount++
+		}
+	}
+	return diffcount
+}
+
+func showCommon(v1, v2 string) {
+	for i, c := range v1 {
+		if c == rune(v2[i]) {
+			fmt.Printf("%c", c)
+		}
+	}
+	fmt.Println()
+
+}
+
+func part2(fdata []string) {
+	index := 0
+	for {
+		v1 := fdata[index]
+		index++
+		v2 := fdata[index]
+		index++
+		//fmt.Println(v1, v2, countDiffs(v1, v2))
+		if countDiffs(v1, v2) == 1 {
+			fmt.Println("FOUND", v1, v2)
+			showCommon(v1, v2)
+		}
+		if index > len(fdata)-1 {
+			break
+		}
+	}
+}
+
+func main() {
+	fdata := split(bytesToString(readfile("day2data.txt")))
+	sort.Strings(fdata)
+	//fmt.Println(fdata)
+	part2(fdata)
 }
