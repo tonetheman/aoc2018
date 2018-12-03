@@ -202,8 +202,21 @@ func examplepart2() {
 	fmt.Println("answer", validid)
 }
 
+func simpleparseall(sdata []string) []cloth {
+	res := make([]cloth, 0)
+	for i := 0; i < len(sdata); i++ {
+		var id, posx, posy, w, h int
+		fmt.Sscanf(sdata[i], "#%d @ %d,%d: %dx%d", &id, &posx, &posy, &w, &h)
+		fmt.Println(id, posx, posy, w, h)
+		res = append(res, cloth{id, posx, posy, w, h})
+	}
+	return res
+}
+
 func part2() {
+	// get bytes
 	bytedata := readfile("../input")
+	// fix windows crap 1310
 	if runtime.GOOS == "windows" {
 		// stupid idea to fix problems with parsing ...
 		// did not appear to work
@@ -213,10 +226,13 @@ func part2() {
 			}
 		}
 	}
-	stringdata := bytesToString(bytedata)
-	data := rt(stringdata)
-	cloths := parseall(data)
-	fmt.Println("part2", cloths)
+	// convert data to string
+	stringdata := string(bytedata)
+	// split on the \n
+	data := strings.Split(stringdata, "\n")
+	// much easy parse i am an eeeeeediot
+	cloths := simpleparseall(data)
+	//fmt.Println("part2", cloths)
 	var sq [esize][esize]int
 	layoutpart2(cloths, &sq)
 	validid := -1
