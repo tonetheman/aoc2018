@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+// example size board
+//const esize = 10
+
+const esize = 1000
+
 type cloth struct {
 	id            int
 	posx, posy    int
@@ -58,20 +63,13 @@ func parseall(s []string) []cloth {
 	return res
 }
 
-func p() {
-	bytedata := readfile("../input")
-	stringdata := bytesToString(bytedata)
-	data := rt(stringdata)
-	fmt.Println(parseall(data))
-}
-
-func pr(sq [10][10]int) {
-	for i := 0; i < 10; i++ {
+func pr(sq [esize][esize]int) {
+	for i := 0; i < esize; i++ {
 		fmt.Println(sq[i])
 	}
 }
 
-func layoutone(c cloth, sq *[10][10]int) {
+func layoutone(c cloth, sq *[esize][esize]int) {
 	fmt.Println("layout 1", c)
 	for i := c.posx; i < c.posx+c.width; i++ {
 		for j := c.posy; j < c.posy+c.height; j++ {
@@ -80,14 +78,14 @@ func layoutone(c cloth, sq *[10][10]int) {
 	}
 }
 
-func layout(cloths []cloth, sq *[10][10]int) {
+func layout(cloths []cloth, sq *[esize][esize]int) {
 	for i := 0; i < len(cloths); i++ {
 		layoutone(cloths[i], sq)
 	}
 }
 
 func example() {
-	var sq [10][10]int
+	var sq [esize][esize]int
 	pr(sq)
 	s := `
 	#1 @ 1,3: 4x4
@@ -98,8 +96,26 @@ func example() {
 	cloths := parseall(sdata)
 	layout(cloths, &sq)
 	count := 0
-	for i := 0; i < 10; i++ {
-		for j := 0; j < 10; j++ {
+	for i := 0; i < esize; i++ {
+		for j := 0; j < esize; j++ {
+			if sq[i][j] > 1 {
+				count++
+			}
+		}
+	}
+	fmt.Println("answer", count)
+}
+
+func part1() {
+	bytedata := readfile("../input")
+	stringdata := bytesToString(bytedata)
+	data := rt(stringdata)
+	cloths := parseall(data)
+	var sq [esize][esize]int
+	layout(cloths, &sq)
+	count := 0
+	for i := 0; i < esize; i++ {
+		for j := 0; j < esize; j++ {
 			if sq[i][j] > 1 {
 				count++
 			}
@@ -109,5 +125,5 @@ func example() {
 }
 
 func main() {
-	example()
+	part1()
 }
