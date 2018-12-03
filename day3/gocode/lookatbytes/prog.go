@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"runtime"
+	"strings"
 )
 
 func readfile(filename string) []byte {
@@ -32,8 +33,14 @@ func main() {
 		}
 	}
 	s := bytestostring(buffer)
-	for i := 0; i < 32; i++ {
-		fmt.Printf("%x, ", s[i])
+	sdata := strings.Split(s, "\n")
+	fmt.Println(sdata)
+	fmt.Println("FIRST", sdata[0])
+
+	for i := 0; i < len(sdata); i++ {
+		var id, posx, posy, w, h int
+		fmt.Sscanf(sdata[i], "#%d @ %d,%d: %dx%d", &id, &posx, &posy, &w, &h)
+		fmt.Println(id, posx, posy, w, h)
 	}
-	fmt.Println()
+	fmt.Println("fin")
 }
