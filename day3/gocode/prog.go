@@ -46,7 +46,7 @@ func parseone(s string) cloth {
 	posy, _ := strconv.Atoi(strings.TrimRight(pdata[1], ":"))
 	_whd := strings.Split(widthheightstring, "x")
 	width, _ := strconv.Atoi(_whd[0])
-	height, _ := strconv.Atoi(_whd[1])
+	height, _ := strconv.Atoi(strings.TrimRight(_whd[1], "\n"))
 	return cloth{id, posx, posy, width, height}
 }
 
@@ -58,9 +58,45 @@ func parseall(s []string) []cloth {
 	return res
 }
 
-func main() {
+func p() {
 	bytedata := readfile("../input")
 	stringdata := bytesToString(bytedata)
 	data := rt(stringdata)
 	fmt.Println(parseall(data))
+}
+
+func pr(sq [10][10]int) {
+	for i := 0; i < 10; i++ {
+		fmt.Println(sq[i])
+	}
+}
+
+func layoutone(c cloth, sq *[10][10]int) {
+	fmt.Println("layout 1", c)
+	for i := c.posx; i < c.posx+c.width; i++ {
+		for j := c.posy; j < c.posy+c.height; j++ {
+			sq[j][i] = c.id
+		}
+	}
+}
+
+func layout(cloths []cloth, sq [10][10]int) {
+	for i := 0; i < len(cloths); i++ {
+		layoutone(cloths[i], &sq)
+	}
+	pr(sq)
+}
+
+func main() {
+	var sq [10][10]int
+	pr(sq)
+	s := `
+	#1 @ 1,3: 4x4
+	#2 @ 3,1: 4x4
+	#3 @ 5,5: 2x2
+	`
+	sdata := rt(s)
+	cloths := parseall(sdata)
+	fmt.Println(cloths)
+	layout(cloths, sq)
 }
