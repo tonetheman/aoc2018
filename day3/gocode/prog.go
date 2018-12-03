@@ -9,9 +9,9 @@ import (
 )
 
 // example size board
-const esize = 10
+//const esize = 10
 
-//const esize = 1000
+const esize = 1000
 
 type cloth struct {
 	id            int
@@ -78,14 +78,46 @@ func layoutone(c cloth, sq *[esize][esize]int) {
 	}
 }
 
+func markboardbad(id int, sq *[esize][esize]int) {
+	for i := 0; i < esize; i++ {
+		for j := 0; j < esize; j++ {
+			if sq[j][i] == id {
+				sq[j][i] = -1
+			}
+		}
+	}
+}
+
 func layoutoutonepart2(c cloth, sq *[esize][esize]int) bool {
 	bad := false
+	badids := make(map[int]int, 0)
 	for i := c.posx; i < c.posx+c.width; i++ {
 		for j := c.posy; j < c.posy+c.height; j++ {
 			if sq[j][i] != 0 {
 				bad = true
+				if sq[j][i] != -1 {
+					badids[sq[j][i]]++
+				}
 			}
-			sq[j][i] = c.id
+			//sq[j][i] = c.id
+		}
+	}
+	if bad {
+		// there something down already underneath
+		for i := c.posx; i < c.posx+c.width; i++ {
+			for j := c.posy; j < c.posy+c.height; j++ {
+				sq[j][i] = -1
+			}
+		}
+		// mark the bad ones too
+		for k, _ := range badids {
+			markboardbad(k, sq)
+		}
+	} else {
+		for i := c.posx; i < c.posx+c.width; i++ {
+			for j := c.posy; j < c.posy+c.height; j++ {
+				sq[j][i] = c.id
+			}
 		}
 	}
 	return bad
@@ -145,6 +177,7 @@ func part1() {
 }
 
 func examplepart2() {
+	fmt.Println("starting example part 2")
 	var sq [esize][esize]int
 	s := `
 	#1 @ 1,3: 4x4
@@ -154,21 +187,43 @@ func examplepart2() {
 	sdata := rt(s)
 	cloths := parseall(sdata)
 	layoutpart2(cloths, &sq)
-	pr(sq)
-	/*
-		count := 0
-		for i := 0; i < esize; i++ {
-			for j := 0; j < esize; j++ {
-				if sq[i][j] > 1 {
-					count++
-				}
+	//pr(sq)
+
+	validid := -1
+	for i := 0; i < esize; i++ {
+		for j := 0; j < esize; j++ {
+			if sq[i][j] > 0 {
+				fmt.Println(sq[i][j])
+				validid = sq[i][j]
 			}
 		}
-		fmt.Println("answer", count)
-	*/
+	}
+	fmt.Println("answer", validid)
+}
+
+func part2() {
+	bytedata := readfile("../input")
+	stringdata := bytesToString(bytedata)
+	data := rt(stringdata)
+	cloths := parseall(data)
+	fmt.Println("part2", cloths)
+	var sq [esize][esize]int
+	layoutpart2(cloths, &sq)
+	validid := -1
+	//pr(sq)
+	for i := 0; i < esize; i++ {
+		for j := 0; j < esize; j++ {
+			if sq[i][j] > 0 {
+				fmt.Println(sq[i][j])
+				validid = sq[i][j]
+			}
+		}
+	}
+	fmt.Println("answer", validid)
 }
 
 func main() {
 	//part1()
-	examplepart2()
+	//examplepart2()
+	part2()
 }
