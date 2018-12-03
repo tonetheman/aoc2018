@@ -9,9 +9,9 @@ import (
 )
 
 // example size board
-//const esize = 10
+const esize = 10
 
-const esize = 1000
+//const esize = 1000
 
 type cloth struct {
 	id            int
@@ -78,9 +78,29 @@ func layoutone(c cloth, sq *[esize][esize]int) {
 	}
 }
 
+func layoutoutonepart2(c cloth, sq *[esize][esize]int) bool {
+	bad := false
+	for i := c.posx; i < c.posx+c.width; i++ {
+		for j := c.posy; j < c.posy+c.height; j++ {
+			if sq[j][i] != 0 {
+				bad = true
+			}
+			sq[j][i] = c.id
+		}
+	}
+	return bad
+}
+
 func layout(cloths []cloth, sq *[esize][esize]int) {
 	for i := 0; i < len(cloths); i++ {
 		layoutone(cloths[i], sq)
+	}
+}
+
+func layoutpart2(cloths []cloth, sq *[esize][esize]int) {
+	for i := 0; i < len(cloths); i++ {
+		res := layoutoutonepart2(cloths[i], sq)
+		fmt.Println(res)
 	}
 }
 
@@ -124,6 +144,31 @@ func part1() {
 	fmt.Println("answer", count)
 }
 
+func examplepart2() {
+	var sq [esize][esize]int
+	s := `
+	#1 @ 1,3: 4x4
+	#2 @ 3,1: 4x4
+	#3 @ 5,5: 2x2
+	`
+	sdata := rt(s)
+	cloths := parseall(sdata)
+	layoutpart2(cloths, &sq)
+	pr(sq)
+	/*
+		count := 0
+		for i := 0; i < esize; i++ {
+			for j := 0; j < esize; j++ {
+				if sq[i][j] > 1 {
+					count++
+				}
+			}
+		}
+		fmt.Println("answer", count)
+	*/
+}
+
 func main() {
-	part1()
+	//part1()
+	examplepart2()
 }
