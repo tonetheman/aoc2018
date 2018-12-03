@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -203,6 +204,15 @@ func examplepart2() {
 
 func part2() {
 	bytedata := readfile("../input")
+	if runtime.GOOS == "windows" {
+		// stupid idea to fix problems with parsing ...
+		// did not appear to work
+		for i := 0; i < len(bytedata); i++ {
+			if bytedata[i] == '\r' {
+				bytedata[i] = ' '
+			}
+		}
+	}
 	stringdata := bytesToString(bytedata)
 	data := rt(stringdata)
 	cloths := parseall(data)
