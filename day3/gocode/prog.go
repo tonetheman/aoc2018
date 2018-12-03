@@ -36,14 +36,25 @@ func scan(str string) {
 	}
 }
 
-func regexTest(str string) {
-	P := regexp.MustCompile("^#([0-9])+ @ [0-9]+,[0-9]+: [0-9]+x[0-9]+")
+// splits the string...
+// FUCK regex in go this is easy in python
+func regexTest(str string) []string {
+	res := make([]string, 0)
+	P := regexp.MustCompile("^#[0-9]+ @ [0-9]+,[0-9]+: [0-9]+x[0-9]+")
+	firstone := P.FindString(str)
+	res = append(res, firstone)
+	//fmt.Println(firstone)
 	data := P.Split(str, -1)
-	fmt.Println(data)
+	//fmt.Println(data)
+	for i := 0; i < len(data); i++ {
+		res = append(res, data[i])
+	}
+	return res
 }
 
 func main() {
 	bytedata := readfile("../input")
 	stringdata := bytesToString(bytedata)
-	regexTest(stringdata)
+	splitData := regexTest(stringdata)
+	fmt.Println(splitData)
 }
