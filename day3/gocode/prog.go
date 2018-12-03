@@ -75,19 +75,18 @@ func layoutone(c cloth, sq *[10][10]int) {
 	fmt.Println("layout 1", c)
 	for i := c.posx; i < c.posx+c.width; i++ {
 		for j := c.posy; j < c.posy+c.height; j++ {
-			sq[j][i] = c.id
+			sq[j][i]++
 		}
 	}
 }
 
-func layout(cloths []cloth, sq [10][10]int) {
+func layout(cloths []cloth, sq *[10][10]int) {
 	for i := 0; i < len(cloths); i++ {
-		layoutone(cloths[i], &sq)
+		layoutone(cloths[i], sq)
 	}
-	pr(sq)
 }
 
-func main() {
+func example() {
 	var sq [10][10]int
 	pr(sq)
 	s := `
@@ -97,6 +96,18 @@ func main() {
 	`
 	sdata := rt(s)
 	cloths := parseall(sdata)
-	fmt.Println(cloths)
-	layout(cloths, sq)
+	layout(cloths, &sq)
+	count := 0
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 10; j++ {
+			if sq[i][j] > 1 {
+				count++
+			}
+		}
+	}
+	fmt.Println("answer", count)
+}
+
+func main() {
+	example()
 }
