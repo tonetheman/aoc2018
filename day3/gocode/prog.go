@@ -1,12 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
+	"regexp"
 	"strings"
-
-	"text/scanner"
 )
+
+type cloth struct {
+	id            int
+	posx, posy    int
+	width, height int
+}
 
 func readfile(filename string) []byte {
 	filedata, err := ioutil.ReadFile(filename)
@@ -22,20 +28,22 @@ func bytesToString(buffer []byte) string {
 }
 
 func scan(str string) {
-	var sc scanner.Scanner
-	sc.Init(strings.NewReader(str))
-	count := 0
-	for tok := sc.Scan(); tok != scanner.EOF; tok = sc.Scan() {
-		fmt.Println("%s %s\n", sc.Position, sc.TokenText())
-		count++
-		if count > 9 {
-			break
-		}
+	scanner := bufio.NewScanner(strings.NewReader(str))
+	scanner.Split(bufio.ScanWords)
+	for i := 0; i < 4; i++ {
+		fmt.Println(scanner.Scan())
+		fmt.Println(scanner.Text())
 	}
+}
+
+func regexTest(str string) {
+	P := regexp.MustCompile("^#([0-9])+ @ [0-9]+,[0-9]+: [0-9]+x[0-9]+")
+	data := P.Split(str, -1)
+	fmt.Println(data)
 }
 
 func main() {
 	bytedata := readfile("../input")
 	stringdata := bytesToString(bytedata)
-	scan(stringdata)
+	regexTest(stringdata)
 }
