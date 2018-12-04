@@ -3,12 +3,37 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"sort"
 	"strings"
 )
 
 type _rec struct {
 	y, m, d, hh, mm int
 	desc            string
+}
+
+type byTimestamp []_rec
+
+func (a byTimestamp) Len() int {
+	return len(a)
+}
+func (a byTimestamp) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
+}
+func (a byTimestamp) Less(i, j int) bool {
+	if a[i].y != a[j].y {
+		return a[i].y < a[j].y
+	}
+	if a[i].m != a[j].m {
+		return a[i].m < a[j].m
+	}
+	if a[i].d != a[j].d {
+		return a[i].d < a[j].d
+	}
+	if a[i].hh != a[j].hh {
+		return a[i].hh < a[j].hh
+	}
+	return a[i].mm < a[j].mm
 }
 
 func readfile(filename string) []byte {
@@ -47,6 +72,20 @@ func getInputRecords(filename string) []_rec {
 	return _recs
 }
 
+func pr(recs []_rec) {
+	for i := 0; i < len(recs); i++ {
+		fmt.Println(recs[i])
+	}
+}
+
+func pr10(recs []_rec) {
+	for i := 0; i < 10; i++ {
+		fmt.Println(recs[i])
+	}
+}
+
 func main() {
-	getInputRecords("..\\input")
+	recs := getInputRecords("../input")
+	junk := byTimestamp(recs)
+	sort.Sort(junk)
 }
