@@ -74,7 +74,7 @@ func getInputRecords(filename string) []_rec {
 
 func pr(recs []_rec) {
 	for i := 0; i < len(recs); i++ {
-		fmt.Println(recs[i])
+		fmt.Println(i, recs[i])
 	}
 }
 
@@ -84,8 +84,22 @@ func pr10(recs []_rec) {
 	}
 }
 
+func validate_hour(recs []_rec) {
+	var m map[int]int = make(map[int]int)
+	for i := 0; i < len(recs); i++ {
+		r := recs[i]
+		m[r.hh]++
+	}
+	fmt.Println(m)
+	// PROVED: hours only 23 and 0 in the file for real input
+	// and example input
+}
+
 func main() {
-	recs := getInputRecords("../input")
+	//recs := getInputRecords("../input")
+	recs := getInputRecords("./input-example")
 	junk := byTimestamp(recs)
 	sort.Sort(junk)
+	pr(recs)
+
 }
