@@ -106,6 +106,7 @@ func allzero(a [60]int) bool {
 	return res
 }
 
+// AKA part1
 func whosleptthemost(recs []_rec) {
 	current_guard_id := 0
 	sleep_start_hour := 0
@@ -210,12 +211,113 @@ func whosleptthemost(recs []_rec) {
 		who, largest_index, who*largest_index)
 }
 
+func part2(recs []_rec) {
+	var current_guard_id int
+	var last_guard_id int = -1
+	var sleep_start_hour, sleep_start_min int
+	var tmp [60]int
+
+	cleartmp := func() {
+		for i := 0; i < 60; i++ {
+			tmp[i] = 0
+		}
+	}
+	cleartmp()
+
+	type guard_and_seconds struct {
+		id  int
+		tmp [60]int
+	}
+
+	var alltimes []guard_and_seconds = make([]guard_and_seconds, 0)
+	makeone := func() guard_and_seconds {
+		var crud guard_and_seconds
+		crud.id = last_guard_id
+		for i := 0; i < 60; i++ {
+			crud.tmp[i] = tmp[i]
+		}
+		return crud
+	}
+	for i := 0; i < len(recs); i++ {
+		// get a pointer to the current record
+		r := recs[i]
+		if strings.HasPrefix(r.desc, "Guard #") {
+			// begin of shift record
+			fmt.Sscanf(r.desc, "Guard #%d", &current_guard_id)
+			//fmt.Println("current guard id changed to", current_guard_id, r)
+
+			if last_guard_id == -1 {
+				// this is the first guard
+				last_guard_id = current_guard_id
+			} else {
+				// there was a last guard id
+				//+fmt.Println(last_guard_id, tmp)
+				alltimes = append(alltimes, makeone())
+				last_guard_id = current_guard_id
+				cleartmp()
+			}
+
+		}
+		if strings.HasPrefix(r.desc, "falls") {
+			//fmt.Println("\t", r)
+			sleep_start_hour = r.hh
+			sleep_start_min = r.mm
+		}
+		if strings.HasPrefix(r.desc, "wakes") {
+			//fmt.Println("\t", r)
+			for j := sleep_start_min; j < r.mm; j++ {
+				tmp[j] += 1
+			}
+		}
+	}
+
+	//+ fmt.Println(last_guard_id, tmp)
+	alltimes = append(alltimes, makeone())
+
+	// GO BUG!!!!!!!! had to put this here
+	fmt.Println(sleep_start_hour, sleep_start_min)
+
+	for i := 0; i < len(alltimes); i++ {
+		fmt.Println(alltimes[i])
+	}
+
+	// need to gather times now according to guard
+	var gatherd map[int][60]int = make(map[int][60]int, 0)
+	for i := 0; i < len(alltimes); i++ {
+		a := alltimes[i]
+		g := gatherd[a.id]
+		for j := 0; j < 60; j++ {
+			g[j] += a.tmp[j]
+		}
+		gatherd[a.id] = g
+	}
+	fmt.Println("--------------")
+	sleepiest_guard := -1
+	sleepiest_min := -1
+	sleepiest_index := -1
+	for k, v := range gatherd {
+		fmt.Println(k, v)
+		for index := 0; index < 60; index++ {
+			if v[index] > sleepiest_min {
+				sleepiest_guard = k
+				sleepiest_min = v[index]
+				sleepiest_index = index
+				//fmt.Println("INDEX", index)
+			}
+		}
+	}
+	fmt.Println("sleepiest guard and min", sleepiest_guard, sleepiest_min)
+	fmt.Println("sleepiest index", sleepiest_index)
+	fmt.Println("res", sleepiest_guard*sleepiest_index)
+}
+
 func main() {
 	recs := getInputRecords("../input")
 	//recs := getInputRecords("./input-example")
 	junk := byTimestamp(recs)
 	sort.Sort(junk)
 	//pr(recs)
-	whosleptthemost(recs)
+	//whosleptthemost(recs)
+	part2(recs)
 
 }
