@@ -88,14 +88,18 @@ func part1(input []byte) int {
 }
 
 func removeP(c byte, input []byte) []byte {
-	var tmpinput []byte
 	// remove a specific item and compress
 	// then return it
+	size := len(input)
 	for i := 0; i < len(input); i++ {
 		if input[i] == c || input[i] == c+32 {
 			input[i] = 0
+			size--
 		}
 	}
+
+	var tmpinput []byte = make([]byte, size)
+
 	// now compress it
 	counter := 0
 	for i := 0; i < len(input); i++ {
