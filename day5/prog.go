@@ -17,6 +17,7 @@ func readfile(filename string) []byte {
 
 func part1(input []byte) int {
 	ilen := len(input) // take this here
+	//fmt.Println("part1 ilen is", ilen)
 	tmpinput := make([]byte, len(input))
 	cleartmpinput := func() {
 		for i := 0; i < len(input); i++ {
@@ -73,7 +74,7 @@ func part1(input []byte) int {
 		}
 
 		if !gotone {
-			fmt.Println("QUITING")
+			//fmt.Println("QUITING")
 			break
 		}
 
@@ -88,7 +89,7 @@ func part1(input []byte) int {
 	}
 	tmp := string(input)
 	tmp2 := strings.Trim(tmp, " ")
-	//fmt.Println(tmp2)
+	//fmt.Println("ENDCOMPRESS", tmp2)
 	//fmt.Println(len(tmp2))
 	//fmt.Println(len(tmp2))
 	return len(tmp2)
@@ -99,7 +100,7 @@ func removeP(c byte, input []byte) []byte {
 	// then return it
 	size := len(input)
 	for i := 0; i < len(input); i++ {
-		if input[i] == c || input[i] == c+32 {
+		if input[i] == c || input[i] == c-32 {
 			input[i] = 0
 			size--
 		}
@@ -118,11 +119,39 @@ func removeP(c byte, input []byte) []byte {
 	return tmpinput
 }
 
-func main() {
+func part2() {
 	input := readfile("./input")
 	//input := readfile("./input-example")
-	//newinput := removeP('a', input)
+	//fmt.Println("original input here", input)
 	//fmt.Println(string(input))
-	//fmt.Println(string(newinput))
-	part1(input)
+	originputlen := len(input)
+	savedinput := make([]byte, len(input))
+	for i := 0; i < len(input); i++ {
+		savedinput[i] = input[i]
+	}
+	restoreinput := func() {
+		for i := 0; i < originputlen; i++ {
+			input[i] = savedinput[i]
+		}
+	}
+	smallest := 90000000
+	mychars := []byte{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}
+	//mychars := []byte{'c'}
+	for ii := 0; ii < len(mychars); ii++ {
+		restoreinput()
+		cc := mychars[ii]
+		newinput := removeP(cc, input)
+		//fmt.Println(string(input))
+		//fmt.Println(string(newinput))
+		res := part1(newinput)
+		if res < smallest {
+			smallest = res
+		}
+		//fmt.Println("compressed", cc, part1(newinput))
+	}
+	fmt.Println("smallest is", smallest)
+}
+
+func main() {
+	part2()
 }
