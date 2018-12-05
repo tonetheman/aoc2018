@@ -95,6 +95,17 @@ func validate_hour(recs []_rec) {
 	// and example input
 }
 
+// checks for all zero
+func allzero(a [60]int) bool {
+	res := true
+	for i := 0; i < 60; i++ {
+		if a[i] != 0 {
+			res = false
+		}
+	}
+	return res
+}
+
 func whosleptthemost(recs []_rec) {
 	current_guard_id := 0
 	sleep_start_hour := 0
@@ -136,38 +147,72 @@ func whosleptthemost(recs []_rec) {
 		}
 	}
 	fmt.Println("who slept the most", who, whototal)
+	var tmp [60]int
+	var total_tmp [60]int
 
 	// now find the most slept min for the dude
 	fmt.Println("now looking for when this dude slept...")
 	for i := 0; i < len(recs); i++ {
+		// get a pointer to the current record
 		r := recs[i]
 		if strings.HasPrefix(r.desc, "Guard #") {
 			// begin of shift record
 			fmt.Sscanf(r.desc, "Guard #%d", &current_guard_id)
 			if current_guard_id == who {
-				fmt.Println("current guard id changed to", current_guard_id, r)
+				if allzero(tmp) {
 
+				} else {
+					fmt.Println("RES", tmp)
+					for k := 0; k < 60; k++ {
+						total_tmp[k] += tmp[k]
+					}
+				}
+
+				fmt.Println("current guard id changed to", current_guard_id, r)
+				for j := 0; j < 60; j++ {
+					tmp[j] = 0
+				}
 			}
 		}
 		if strings.HasPrefix(r.desc, "falls") {
 			if current_guard_id == who {
 				// this is the guy we are intereted in
 				fmt.Println("\t", r)
+				sleep_start_hour = r.hh
+				sleep_start_min = r.mm
 			}
 		}
 		if strings.HasPrefix(r.desc, "wakes") {
 			if current_guard_id == who {
 				// this is the guy we are interested in
 				fmt.Println("\t", r)
+				for j := sleep_start_min; j < r.mm; j++ {
+					tmp[j] = 1
+				}
 			}
 		}
 	}
-
+	fmt.Println("RES", tmp)
+	for k := 0; k < 60; k++ {
+		total_tmp[k] += tmp[k]
+	}
+	fmt.Println("TOTALRES", total_tmp)
+	largest_index := 0
+	largest_value := -1
+	for i := 0; i < 60; i++ {
+		if total_tmp[i] > largest_value {
+			largest_index = i
+			largest_value = total_tmp[i]
+		}
+	}
+	fmt.Println("largest value and index", largest_value, largest_index)
+	fmt.Println("who, largestindex and final answer",
+		who, largest_index, who*largest_index)
 }
 
 func main() {
-	//recs := getInputRecords("../input")
-	recs := getInputRecords("./input-example")
+	recs := getInputRecords("../input")
+	//recs := getInputRecords("./input-example")
 	junk := byTimestamp(recs)
 	sort.Sort(junk)
 	//pr(recs)
