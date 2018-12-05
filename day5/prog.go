@@ -70,6 +70,12 @@ func part1(input []byte) int {
 				input[i] = 0
 				input[i+1] = 0
 				gotone = true
+
+				// if this break is here
+				// it acts more like the prob example
+				// taking the break out
+				// eliminates pairs across the string
+				// from left to right all at once
 				//break
 			}
 		}
