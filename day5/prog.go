@@ -20,7 +20,10 @@ func part1(input []byte) int {
 	//fmt.Println("part1 ilen is", ilen)
 	tmpinput := make([]byte, len(input))
 	cleartmpinput := func() {
-		for i := 0; i < len(input); i++ {
+		//for i := 0; i < len(input); i++ {
+		//	tmpinput[i] = 0
+		//}
+		for i := range input {
 			tmpinput[i] = 0
 		}
 	}
