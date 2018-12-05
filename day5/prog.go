@@ -17,6 +17,7 @@ func readfile(filename string) []byte {
 
 func part1(input []byte) int {
 	ilen := len(input) // take this here
+	emptyarray := make([]byte, ilen)
 	//fmt.Println("part1 ilen is", ilen)
 	tmpinput := make([]byte, len(input))
 	cleartmpinput := func() {
@@ -37,9 +38,10 @@ func part1(input []byte) int {
 		}
 	}
 	clearinput := func() {
-		for i := 0; i < ilen; i++ {
-			input[i] = 0
-		}
+		copy(input, emptyarray)
+		//for i := 0; i < ilen; i++ {
+		//	input[i] = 0
+		//}
 	}
 	movetoinput := func() {
 		for i := 0; i < ilen; i++ {
