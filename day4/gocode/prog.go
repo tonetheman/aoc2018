@@ -95,11 +95,82 @@ func validate_hour(recs []_rec) {
 	// and example input
 }
 
+func whosleptthemost(recs []_rec) {
+	current_guard_id := 0
+	sleep_start_hour := 0
+	sleep_start_min := 0
+
+	var guard_sleep_totals map[int]int = make(map[int]int)
+	for i := 0; i < len(recs); i++ {
+		r := recs[i]
+		if strings.HasPrefix(r.desc, "Guard #") {
+			// begin of shift record
+			fmt.Sscanf(r.desc, "Guard #%d", &current_guard_id)
+			fmt.Println("current guard id changed to", current_guard_id)
+		}
+		if strings.HasPrefix(r.desc, "falls") {
+			sleep_start_hour = r.hh
+			sleep_start_min = r.mm
+		}
+		if strings.HasPrefix(r.desc, "wakes") {
+			// compute sleep now
+			//fmt.Println("guard", current_guard_id, "slept", (r.mm - sleep_start_min))
+			_, ok := guard_sleep_totals[current_guard_id]
+			if !ok {
+				guard_sleep_totals[current_guard_id] = (r.mm - sleep_start_min)
+			} else {
+				guard_sleep_totals[current_guard_id] += (r.mm - sleep_start_min)
+			}
+			if sleep_start_hour != r.hh {
+				fmt.Println("WARN")
+			}
+		}
+	}
+
+	whototal := -1
+	who := -1
+	for k, v := range guard_sleep_totals {
+		if v > whototal {
+			who = k
+			whototal = v
+		}
+	}
+	fmt.Println("who slept the most", who, whototal)
+
+	// now find the most slept min for the dude
+	fmt.Println("now looking for when this dude slept...")
+	for i := 0; i < len(recs); i++ {
+		r := recs[i]
+		if strings.HasPrefix(r.desc, "Guard #") {
+			// begin of shift record
+			fmt.Sscanf(r.desc, "Guard #%d", &current_guard_id)
+			if current_guard_id == who {
+				fmt.Println("current guard id changed to", current_guard_id, r)
+
+			}
+		}
+		if strings.HasPrefix(r.desc, "falls") {
+			if current_guard_id == who {
+				// this is the guy we are intereted in
+				fmt.Println("\t", r)
+			}
+		}
+		if strings.HasPrefix(r.desc, "wakes") {
+			if current_guard_id == who {
+				// this is the guy we are interested in
+				fmt.Println("\t", r)
+			}
+		}
+	}
+
+}
+
 func main() {
 	//recs := getInputRecords("../input")
 	recs := getInputRecords("./input-example")
 	junk := byTimestamp(recs)
 	sort.Sort(junk)
-	pr(recs)
+	//pr(recs)
+	whosleptthemost(recs)
 
 }
