@@ -70,7 +70,7 @@ func part1(input []byte) int {
 				input[i] = 0
 				input[i+1] = 0
 				gotone = true
-				break
+				//break
 			}
 		}
 		//fmt.Println("input after clear", string(input))
