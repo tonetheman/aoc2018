@@ -16,6 +16,7 @@ func readfile(filename string) []byte {
 }
 
 func part1(input []byte) int {
+	ilen := len(input) // take this here
 	tmpinput := make([]byte, len(input))
 	cleartmpinput := func() {
 		for i := 0; i < len(input); i++ {
@@ -24,7 +25,7 @@ func part1(input []byte) int {
 	}
 	movetotmp := func() {
 		counter := 0
-		for i := 0; i < len(input); i++ {
+		for i := 0; i < ilen; i++ {
 			if input[i] != 0 {
 				tmpinput[counter] = input[i]
 				counter++
@@ -32,12 +33,12 @@ func part1(input []byte) int {
 		}
 	}
 	clearinput := func() {
-		for i := 0; i < len(input); i++ {
+		for i := 0; i < ilen; i++ {
 			input[i] = 0
 		}
 	}
 	movetoinput := func() {
-		for i := 0; i < len(input); i++ {
+		for i := 0; i < ilen; i++ {
 			input[i] = tmpinput[i]
 		}
 	}
@@ -47,7 +48,7 @@ func part1(input []byte) int {
 		gotone := false
 
 		//fmt.Println("input before cycle", string(input))
-		for i := 0; i < len(input)-1; i++ {
+		for i := 0; i < ilen-1; i++ {
 			c1 := input[i]
 			c2 := input[i+1]
 			if c1 == c2+32 || c1+32 == c2 {
@@ -67,6 +68,10 @@ func part1(input []byte) int {
 		movetoinput()
 		// need to compress gaps here
 
+		if gotone {
+			ilen -= 2
+		}
+
 		if !gotone {
 			fmt.Println("QUITING")
 			break
@@ -74,6 +79,8 @@ func part1(input []byte) int {
 
 	}
 
+	// clear all the input here not trimmed down amount
+	// being careful
 	for i := 0; i < len(input); i++ {
 		if input[i] == 0 {
 			input[i] = 32
@@ -83,7 +90,7 @@ func part1(input []byte) int {
 	tmp2 := strings.Trim(tmp, " ")
 	//fmt.Println(tmp2)
 	//fmt.Println(len(tmp2))
-	fmt.Println(len(tmp2))
+	//fmt.Println(len(tmp2))
 	return len(tmp2)
 }
 
@@ -112,10 +119,10 @@ func removeP(c byte, input []byte) []byte {
 }
 
 func main() {
-	//input := readfile("./input")
-	input := readfile("./input-example")
-	newinput := removeP('a', input)
-	fmt.Println(string(input))
-	fmt.Println(string(newinput))
+	input := readfile("./input")
+	//input := readfile("./input-example")
+	//newinput := removeP('a', input)
+	//fmt.Println(string(input))
+	//fmt.Println(string(newinput))
 	part1(input)
 }
