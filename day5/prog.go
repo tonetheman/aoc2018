@@ -120,19 +120,21 @@ func removeP(c byte, input []byte) []byte {
 }
 
 func part2() {
-	input := readfile("./input")
-	//input := readfile("./input-example")
+	//input := readfile("./input")
+	input := readfile("./input-example")
 	//fmt.Println("original input here", input)
 	//fmt.Println(string(input))
-	originputlen := len(input)
+	//originputlen := len(input)
 	savedinput := make([]byte, len(input))
-	for i := 0; i < len(input); i++ {
-		savedinput[i] = input[i]
-	}
+	//for i := 0; i < len(input); i++ {
+	//	savedinput[i] = input[i]
+	//}
+	copy(savedinput, input)
 	restoreinput := func() {
-		for i := 0; i < originputlen; i++ {
-			input[i] = savedinput[i]
-		}
+		//for i := 0; i < originputlen; i++ {
+		//	input[i] = savedinput[i]
+		//}
+		copy(input, savedinput)
 	}
 	smallest := 90000000
 	mychars := []byte{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}
