@@ -120,8 +120,8 @@ func removeP(c byte, input []byte) []byte {
 }
 
 func part2() {
-	//input := readfile("./input")
-	input := readfile("./input-example")
+	input := readfile("./input")
+	//input := readfile("./input-example")
 	//fmt.Println("original input here", input)
 	//fmt.Println(string(input))
 	//originputlen := len(input)
