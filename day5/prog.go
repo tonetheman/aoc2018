@@ -17,16 +17,22 @@ func readfile(filename string) []byte {
 
 func part1(input []byte) int {
 	ilen := len(input) // take this here
+	// create an empty array
+	// used for clearing in go with a copy (sneaky)
 	emptyarray := make([]byte, ilen)
 	//fmt.Println("part1 ilen is", ilen)
 	tmpinput := make([]byte, len(input))
 	cleartmpinput := func() {
+		// slowest
 		//for i := 0; i < len(input); i++ {
 		//	tmpinput[i] = 0
 		//}
-		for i := range input {
-			tmpinput[i] = 0
-		}
+		// faster
+		//for i := range input {
+		//	tmpinput[i] = 0
+		//}
+		// fastest!!!
+		copy(tmpinput, emptyarray)
 	}
 	movetotmp := func() {
 		counter := 0
@@ -44,9 +50,11 @@ func part1(input []byte) int {
 		//}
 	}
 	movetoinput := func() {
-		for i := 0; i < ilen; i++ {
-			input[i] = tmpinput[i]
-		}
+		// slow compared to copy
+		//for i := 0; i < ilen; i++ {
+		//	input[i] = tmpinput[i]
+		//}
+		copy(input, tmpinput)
 	}
 
 	for {
