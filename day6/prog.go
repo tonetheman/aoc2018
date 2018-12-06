@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const GS = 10
+const GS = 360
 
 type grid [GS][GS]int
 
@@ -34,7 +34,8 @@ func readfile(filename string) []byte {
 }
 
 func pr(g *grid) {
-	names := []string{".", "a", "b", "c", "d", "e", "f"}
+	names := []string{".", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
 	for i := 0; i < GS; i++ {
 		for j := 0; j < GS; j++ {
 			fmt.Printf("%s ", names[g.get_grid(j, i)])
@@ -147,5 +148,16 @@ func example() {
 }
 
 func main() {
+
+	filebytes := readfile("input")
+	filestring := string(filebytes)
+	filelines := strings.Split(filestring, "\n")
+	scarypoints := makePoints(filelines)
+	var g grid
+	placePoints(scarypoints, &g)
+	pr(&g)
+	assignEmpty(scarypoints, &g)
+
+	// max col 359 max row 349
 
 }
