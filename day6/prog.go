@@ -57,7 +57,7 @@ func placePoints(scarypoints points, g *grid) {
 	}
 }
 
-func findWinner(row, col int, g *grid, scarypoints points) {
+func findWinner(row, col int, g *grid, scarypoints points) int {
 	// determine distance for each scary point from
 	// this point i,j - who is the winner of the point?
 	m := make(map[int]int, 0)
@@ -65,8 +65,9 @@ func findWinner(row, col int, g *grid, scarypoints points) {
 		sc := scarypoints[i]
 		pdist := dist(row, col, sc.row, sc.col)
 		m[sc.id] = pdist
-		fmt.Println(sc, pdist, m)
+		//fmt.Println(sc, pdist, m)
 	}
+	fmt.Println(m)
 	// now find the winner of the point
 	smallest := 10000000
 	smallest_count := 0
@@ -93,10 +94,24 @@ func findWinner(row, col int, g *grid, scarypoints points) {
 	fmt.Println("small value", smallest)
 	fmt.Println("small count", smallest_count)
 	fmt.Println("small id", smallest_id)
+	if smallest_count == 1 {
+		return smallest_id
+	} else {
+		return -1
+	}
 }
 
 func assignEmpty(scarypoints points, g *grid) {
-	findWinner(0, 5, g, scarypoints)
+	for i := 0; i < GS; i++ {
+		res := findWinner(0, i, g, scarypoints)
+		if res == -1 {
+			// tie
+		} else {
+			// not a tie
+			g[0][i] = res
+		}
+	}
+	pr(g)
 	/*
 		for i := 0; i < GS; i++ {
 			for j := 0; j < GS; j++ {
