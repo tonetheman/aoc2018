@@ -7,9 +7,17 @@ import (
 	"strings"
 )
 
-const GS = 20
+const GS = 10
 
 type grid [GS][GS]int
+
+func (g *grid) set_grid(row, col int, val int) {
+	g[col][row] = val
+}
+func (g *grid) get_grid(row, col int) int {
+	return g[col][row]
+}
+
 type point struct {
 	id       int
 	row, col int
@@ -29,7 +37,7 @@ func pr(g *grid) {
 	names := []string{".", "a", "b", "c", "d", "e", "f"}
 	for i := 0; i < GS; i++ {
 		for j := 0; j < GS; j++ {
-			fmt.Printf("%s ", names[g[i][j]])
+			fmt.Printf("%s ", names[g.get_grid(j, i)])
 		}
 		fmt.Println()
 	}
@@ -53,11 +61,11 @@ func makePoints(filelines []string) points {
 func placePoints(scarypoints points, g *grid) {
 	for i := range scarypoints {
 		p := scarypoints[i]
-		g[p.col][p.row] = p.id
+		g.set_grid(p.row, p.col, p.id)
 	}
 }
 
-func findWinner(col, row int, g *grid, scarypoints points) int {
+func findWinner(row, col int, g *grid, scarypoints points) int {
 	// determine distance for each scary point from
 	// this point i,j - who is the winner of the point?
 	m := make(map[int]int, 0)
@@ -103,12 +111,15 @@ func findWinner(col, row int, g *grid, scarypoints points) int {
 
 func assignEmpty(scarypoints points, g *grid) {
 	for i := 0; i < GS; i++ {
-		res := findWinner(i, 0, g, scarypoints)
-		if res == -1 {
-			// tie
-		} else {
-			// not a tie
-			g[0][i] = res
+		for j := 0; j < GS; j++ {
+			res := findWinner(j, i, g, scarypoints)
+			if res == -1 {
+				// tie
+			} else {
+				// not a tie
+				g.set_grid(j, i, res)
+			}
+
 		}
 	}
 	pr(g)
@@ -124,7 +135,7 @@ func assignEmpty(scarypoints points, g *grid) {
 	*/
 }
 
-func main() {
+func example() {
 	filebytes := readfile("example-input")
 	filestring := string(filebytes)
 	filelines := strings.Split(filestring, "\n")
@@ -133,4 +144,8 @@ func main() {
 	placePoints(scarypoints, &g)
 	pr(&g)
 	assignEmpty(scarypoints, &g)
+}
+
+func main() {
+
 }
