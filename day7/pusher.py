@@ -4,6 +4,8 @@ class CoolRule:
     def __init__(self,pre,post):
         self.pre = pre
         self.post = post
+    def __repr__(self):
+        return self.pre + "-" + self.post
     
 def mainline():
     data = open("example-input","r").readlines()
@@ -23,15 +25,43 @@ def mainline():
     # first
     res.append("C")
 
+    remove = []
     for cr in rules:
         if cr.pre == "C":
             choices.append(cr.post)
-    
+            remove.append(cr.pre)
+    for r in remove:
+        for cr in rules:
+            if r == cr.pre:
+                rules.remove(cr)
+
     print("res so far",res)
     print("choices so far",choices)
-
+    print("rules",rules)
     choices.sort()
-    
+
+    next = choices[0]
+    choices = choices[1:]
+    res.append(next)
+    remove = []
+    for cr in rules:
+        if cr.pre == "C":
+            choices.append(cr.post)
+            remove.append(cr.pre)
+    for r in remove:
+        for cr in rules:
+            if r == cr.pre:
+                rules.remove(cr)
+
+    print("res so far",res)
+    print("choices so far",choices)
+    print("rules",rules)
+    choices.sort()
+
+
+
+
+
 
 if __name__ == "__main__":
     mainline()
