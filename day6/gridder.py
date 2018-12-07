@@ -4,6 +4,8 @@ class Player:
         self.id = id
         self.row = row
         self.col = col
+    def __repr__(self):
+        return str(self.id)
 
 class Grid:
     def __init__(self,row,col):
@@ -82,6 +84,31 @@ class Grid:
                     count = count + 1
         return count               
 
+    def allplayers_toprow(self):
+        m = {}
+        for i in range(self.col):
+            p = self.get(0,i)
+            m[p] = True
+        return m
+    def allplayers_bottomrow(self):
+        m = {}
+        for i in range(self.col):
+            p = self.get(self.row-1,i)
+            m[p] = True
+        return m
+    def allplayers_leftcol(self):
+        m = {}
+        for i in range(self.row):
+            p = self.get(i,0)
+            m[p]=True
+        return m
+    def allplayers_rightcol(self):
+        m = {}
+        for i in range(self.row):
+            p = self.get(i,self.col-1)
+            m[p]=True
+        return m
+
 def example():
     grid = Grid(10,10)
     grid.read_inputfile("example-input")
@@ -90,8 +117,54 @@ def example():
     print(grid)
     print(grid.countid(5))
 
+def part1():
+    print("part1 starting...")
+    grid = Grid(500,500)
+    print("reading input...")
+    grid.read_inputfile("input")
+    print("filling out empty spots...")
+    grid.fill_in_empty()
+    print("all the players",grid.players)
+
+    pp = {}
+    for p in grid.players:
+        pp[p.id] = True
+    print("pp in part1",pp)
+    # maybe if they are on the top or bottom
+    # they must be infinite
+    # since my grid is way larger than the input
+    toprow = grid.allplayers_toprow()
+    bottomrow = grid.allplayers_bottomrow()
+    # remove the top ones
+    topkeys = list(toprow)
+    for _tmp in topkeys:
+        print("toprow player", _tmp, type(_tmp))
+        if _tmp in pp:
+            print("\t in the top ro!!!")
+            del pp[_tmp]
+    print("pp",pp)
+    bottomkeys = list(bottomrow)
+    for _tmp in bottomkeys:
+        if _tmp in pp:
+            del pp[_tmp]
+    print("pp",pp)
+    lcol = grid.allplayers_leftcol()
+    lkeys = list(lcol)
+    for _tmp in lkeys:
+        if _tmp in pp:
+            del pp[_tmp]
+    print("pp",pp)
+    rcol = grid.allplayers_rightcol()
+    rkeys = list(rcol)
+    for _tmp in rkeys:
+        if _tmp in pp:
+            del pp[_tmp]
+    print("pp",pp)
+    for _tmp in pp:
+        print("pp",grid.countid(_tmp))    
+
 def mainline():
-    pass
-    
+    part1()
+
 if __name__ == "__main__":
     mainline()
