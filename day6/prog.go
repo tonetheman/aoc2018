@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math"
+	"sort"
 	"strings"
 )
 
-const GS = 360
+const GS = 460
 
 type grid [GS][GS]int
 
@@ -76,7 +77,7 @@ func findWinner(row, col int, g *grid, scarypoints points) int {
 		m[sc.id] = pdist
 		//fmt.Println(sc, pdist, m)
 	}
-	fmt.Println(m)
+	//fmt.Println(m)
 	// now find the winner of the point
 	smallest := 10000000
 	smallest_count := 0
@@ -100,9 +101,9 @@ func findWinner(row, col int, g *grid, scarypoints points) int {
 	smallest_count = matchCount()
 
 	// now you are done
-	fmt.Println("small value", smallest)
-	fmt.Println("small count", smallest_count)
-	fmt.Println("small id", smallest_id)
+	//fmt.Println("small value", smallest)
+	//fmt.Println("small count", smallest_count)
+	//fmt.Println("small id", smallest_id)
 	if smallest_count == 1 {
 		return smallest_id
 	} else {
@@ -123,7 +124,7 @@ func assignEmpty(scarypoints points, g *grid) {
 
 		}
 	}
-	pr(g)
+	//pr(g)
 	/*
 		for i := 0; i < GS; i++ {
 			for j := 0; j < GS; j++ {
@@ -147,6 +148,24 @@ func example() {
 	assignEmpty(scarypoints, &g)
 }
 
+func getCounts(g *grid) {
+	m := make(map[int]int, 0)
+	for i := 0; i < GS; i++ {
+		for j := 0; j < GS; j++ {
+			res := g.get_grid(i, j)
+			m[res]++
+		}
+	}
+	keys := make([]int, 0)
+	for k, _ := range m {
+		keys = append(keys, k)
+	}
+	sort.Ints(keys)
+	for _, k := range keys {
+		fmt.Println(k, m[k])
+	}
+}
+
 func main() {
 
 	filebytes := readfile("input")
@@ -155,9 +174,9 @@ func main() {
 	scarypoints := makePoints(filelines)
 	var g grid
 	placePoints(scarypoints, &g)
-	pr(&g)
+	//pr(&g)
 	assignEmpty(scarypoints, &g)
-
+	getCounts(&g)
 	// max col 359 max row 349
 
 }
