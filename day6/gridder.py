@@ -163,8 +163,27 @@ def part1():
     for _tmp in pp:
         print("pp",grid.countid(_tmp))    
 
+def part2():
+    # run once with this
+    # grid = Grid(1000,1000)
+    # run again and compare
+    grid = Grid(1200,1200)
+    grid.read_inputfile("input")
+    lessthan10k = 0
+    for i in range(grid.row):
+        for j in range(grid.col):
+            row = i
+            col = j
+            total = 0
+            for curr_player in grid.players:
+                cdist = grid.dist(row,col,curr_player.row,curr_player.col)
+                total = total + cdist
+            if total<10000:
+                lessthan10k = lessthan10k + 1
+            # print("cdist is",total)
+    print(lessthan10k)
 def mainline():
-    part1()
+    part2()
 
 if __name__ == "__main__":
     mainline()
