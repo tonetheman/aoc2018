@@ -67,7 +67,7 @@ func addToAvail(picked string, src *[]instr, avail *[]instr) {
 	// that has a matching pre and move to avail
 }
 
-func part1() {
+func part1wrong() {
 	filebytes := readfile("example-input")
 	filestring := string(filebytes)
 	filelines := strings.Split(filestring, "\n")
@@ -93,6 +93,25 @@ func part1() {
 	fmt.Println("instructions", instructions)
 	res = append(res, picked)
 	addToAvail(picked, &instructions, &avail)
+}
+
+func part1() {
+	filebytes := readfile("example-input")
+	filestring := string(filebytes)
+	filelines := strings.Split(filestring, "\n")
+	var instructions = make([]instr, 0)
+	for i := range filelines {
+		line := filelines[i]
+		fmt.Println(line)
+		var pre, post string
+		fmt.Sscanf(line, "Step %s must be finished before step %s can begin.", &pre, &post)
+		fmt.Println("\t", pre, post)
+		instructions = append(instructions, instr{pre, post, true})
+	}
+	fmt.Println("all instructions", instructions)
+	res := make([]string, 0)
+
+	fmt.Println("Res", res)
 }
 
 func main() {
