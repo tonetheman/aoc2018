@@ -95,7 +95,7 @@ func part1wrong() {
 	addToAvail(picked, &instructions, &avail)
 }
 
-func part1() {
+func part1wrongagain() {
 	filebytes := readfile("example-input")
 	filestring := string(filebytes)
 	filelines := strings.Split(filestring, "\n")
@@ -112,6 +112,23 @@ func part1() {
 	res := make([]string, 0)
 
 	fmt.Println("Res", res)
+}
+
+func part1() {
+	filebytes := readfile("example-input")
+	filestring := string(filebytes)
+	filelines := strings.Split(filestring, "\n")
+	var instructions = make([]instr, 0)
+	for i := range filelines {
+		line := filelines[i]
+		fmt.Println(line)
+		var pre, post string
+		fmt.Sscanf(line, "Step %s must be finished before step %s can begin.", &pre, &post)
+		fmt.Println("\t", pre, post)
+		instructions = append(instructions, instr{pre, post, true})
+	}
+	fmt.Println("all instructions", instructions)
+
 }
 
 func main() {

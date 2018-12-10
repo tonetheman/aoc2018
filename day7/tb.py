@@ -24,46 +24,34 @@ def loadrules():
         id = id + 1
     return rules
 
-
-class Tree:
+class Node:
     def __init__(self,val):
+        self.degree = 0
         self.val = val
-        self.children = []
-    def addchild(self,child):
-        self.children.append(child)
-    def __repr__(self):
-        return str(self.val)
+        self.next = None
 
-def searchTree(val,head):
-    if head.val == val:
-        return head
-    for c in head.children:
-        res = searchTree(val,c)
-        if res is not None:
-            return res
-    return None
-
-def pt(head,level):
-    print(head,level)
-    for c in head.children:
-        pt(c,level+1)
-    
 def mainline():
     rules = loadrules()
+    ia = []
 
-    head = None
     for rule in rules:
-        if head is None:
-            head = Tree(rule.pre)
-            head.addchild(Tree(rule.post))
+        print(rule)
+        mything = None
+        for thing in ia:
+            if thing.val == rule.pre:
+                mything = thing
+        print("mything is",mything)
+        if mything is None:
+            # in this case we are making a new one
+            tmp = Node(rule.pre)
+            tmp.next = Node(rule.post)
+            ia.append(tmp)
         else:
-            res = searchTree(rule.pre,head)
-            res2 = searchTree(rule.post,head)
-            if res2 is None:
-                tmp2 = Tree(rule.post)
-            res.children.append(tmp2)
-
-    pt(head,1)
+            # we have one already
+            tmp = tmp.next
+            while tmp.next is not None:
+                tmp = tmp.next
+            tmp.next = None(rule.post)
 
 if __name__ == "__main__":
     mainline()
