@@ -141,8 +141,8 @@ func replacePointer(src _HeadPointer, heads *[]_HeadPointer) {
 }
 
 func getinstructions() []instr {
-	filebytes := readfile("example-input")
-	//filebytes := readfile("input")
+	//filebytes := readfile("example-input")
+	filebytes := readfile("input")
 	filestring := string(filebytes)
 	filelines := strings.Split(filestring, "\n")
 	var instructions = make([]instr, 0)
