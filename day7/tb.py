@@ -8,24 +8,18 @@ class CoolRule:
     def __repr__(self):
         return self.pre + "-" + self.post
 
-class Treenode:
+class Tree:
     def __init__(self,val):
         self.val = val
-        self.pointers = []
-    def add(self,child_node):
-        self.pointers.append(child_node)
+        self.points_to = None
     def __repr__(self):
-        ts = str(self.val)
-        for c in self.pointers:
-            ts = ts + "-" + str(c)
+        ts = "val:" + str(self.val) + " -> " + str(self.points_to)
         return ts
-def findNode(val,head):
+
+def findInTree(head,val):
     if head.val == val:
-        return val
-    for c in head.pointers:
-        res = findNode(val,c)
-        if res:
-            return c
+        return head
+    return findInTree(head.points_to)
 
 def mainline():
     data = open("example-input","r").readlines()
@@ -38,21 +32,28 @@ def mainline():
         m = P.search(line)
         pre = m.group(1)
         post = m.group(2)
-        print(pre,post)
+        # print(pre,post)
         rules.append(CoolRule(id,pre,post))
         id = id + 1
 
-
+    head = None
+    count = 0
     for r in rules:
+        pre = r.pre
+        post = r.post
+
         if head is None:
-            head = Treenode(r.pre)
-            head.add(Treenode(r.post))
-            print(head)
+            head = Tree(pre)
+            child = Tree(post)
+            head.points_to = child
         else:
-            print("need to fill out tree")
-            ip = findNode(r.pre,head)
-            print("found this node",ip)
-            ip.pointers.append(Treenode(r.pre))
+            insert_point = findInTree(head,pre)
+            print("found insert point")
+            
+        print("head is",head)
+        count = count + 1
+        if count==2:
+            break
 
 if __name__ == "__main__":
     mainline()
