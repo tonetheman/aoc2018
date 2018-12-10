@@ -8,20 +8,7 @@ class CoolRule:
     def __repr__(self):
         return self.pre + "-" + self.post
 
-class Tree:
-    def __init__(self,val):
-        self.val = val
-        self.points_to = None
-    def __repr__(self):
-        ts = "val:" + str(self.val) + " -> " + str(self.points_to)
-        return ts
-
-def findInTree(head,val):
-    if head.val == val:
-        return head
-    return findInTree(head.points_to)
-
-def mainline():
+def loadrules():
     data = open("example-input","r").readlines()
     import re
     P = re.compile("Step (\w+) must be finished before step (\w+) can begin.")
@@ -35,25 +22,48 @@ def mainline():
         # print(pre,post)
         rules.append(CoolRule(id,pre,post))
         id = id + 1
+    return rules
+
+
+class Tree:
+    def __init__(self,val):
+        self.val = val
+        self.children = []
+    def addchild(self,child):
+        self.children.append(child)
+    def __repr__(self):
+        return str(self.val)
+
+def searchTree(val,head):
+    if head.val == val:
+        return head
+    for c in head.children:
+        res = searchTree(val,c)
+        if res is not None:
+            return res
+    return None
+
+def pt(head,level):
+    print(head,level)
+    for c in head.children:
+        pt(c,level+1)
+    
+def mainline():
+    rules = loadrules()
 
     head = None
-    count = 0
-    for r in rules:
-        pre = r.pre
-        post = r.post
-
+    for rule in rules:
         if head is None:
-            head = Tree(pre)
-            child = Tree(post)
-            head.points_to = child
+            head = Tree(rule.pre)
+            head.addchild(Tree(rule.post))
         else:
-            insert_point = findInTree(head,pre)
-            print("found insert point")
-            
-        print("head is",head)
-        count = count + 1
-        if count==2:
-            break
+            res = searchTree(rule.pre,head)
+            res2 = searchTree(rule.post,head)
+            if res2 is None:
+                tmp2 = Tree(rule.post)
+            res.children.append(tmp2)
+
+    pt(head,1)
 
 if __name__ == "__main__":
     mainline()
