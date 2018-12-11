@@ -278,6 +278,15 @@ type _worker struct {
 	busy   bool
 }
 
+func findNonBusyWorker(w []_worker) int {
+	for i := range w {
+		if w[i].busy == false {
+			return i
+		}
+	}
+	return -1
+}
+
 func part2() {
 	instructions := getinstructions()
 
@@ -330,9 +339,9 @@ func part2() {
 	fmt.Println("degreemap", degreemap)
 	fmt.Println()
 
+	// current time
 	second := 0
 	workers := make([]_worker, 5)
-
 	// now find all zero in degree map
 	count = 0
 	res := make([]string, 0)
