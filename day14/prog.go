@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-const BS = 32
+const BS = 919901 + 200
 
 type _board struct {
 	elf1 int
@@ -47,34 +47,42 @@ func (b _board) print() {
 	fmt.Println()
 }
 
-func (b _board) newrecipe() int {
+func (b *_board) newrecipe() int {
 	return b.data[b.elf1] + b.data[b.elf2]
 }
 
-func example() {
+func part1() {
 	var board _board
 	addDigits(37, &board)
 
 	board.elf1 = 0 // index
 	board.elf2 = 1 // index
-
+	input := 919901
 	count := 0
 	for {
 		newrecipe := board.newrecipe() //board.data[elf1] + board.data[elf2]
-		fmt.Println("newrecipe is", newrecipe)
+		//fmt.Println("newrecipe is", newrecipe)
 		addDigits(newrecipe, &board)
 		elf1_moves := board.data[board.elf1] + 1
 		elf2_moves := board.data[board.elf2] + 1
 		board.elf1 = (board.elf1 + elf1_moves) % board.pos
 		board.elf2 = (board.elf2 + elf2_moves) % board.pos
-		fmt.Println("------------------")
-		fmt.Println("count", count)
-		board.print()
+		//fmt.Println("------------------")
+		//fmt.Println("count", count)
+		//board.print()
 		count++
-		if count == 9 {
+		//if count == 900 {
+		//	break
+		//}
+		if board.pos-9 > input {
+			fmt.Println("cause done")
 			break
 		}
 	}
+	for i := input; i <= input+9; i++ {
+		fmt.Print(board.data[i])
+	}
+	fmt.Println()
 
 }
 
