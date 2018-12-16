@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"strings"
 )
 
 type _instr struct {
@@ -12,12 +13,19 @@ type _instr struct {
 	output int
 }
 type _registers [4]int
+type ioper func(inreg _registers, oper _instr) _registers
 
 func (r *_registers) copy(src _registers) {
 	r[0] = src[0]
 	r[1] = src[1]
 	r[2] = src[2]
 	r[3] = src[3]
+}
+func (r *_registers) verify(v _registers) bool {
+	return (v[0] == r[0]) &&
+		(v[1] == r[1]) &&
+		(v[2] == r[2]) &&
+		(v[3] == r[3])
 }
 
 func readfile(filename string) []byte {
@@ -188,6 +196,88 @@ func examples() {
 	testSeti()
 }
 
+func iTesting() {
+	names := []string{"addr", "addi", "mulr", "muli",
+		"banr", "bani", "borr", "bori",
+		"seti", "setr", "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"}
+	todos := []ioper{addr, addi, mulr, muli, banr, bani, borr, bori,
+		seti, setr, gtir, gtri, gtrr, eqir, eqri, eqrr}
+	for i := range todos {
+		inreg := _registers{3, 2, 1, 1}
+		outreg := todos[i](inreg, _instr{9, 2, 1, 2})
+		target := _registers{3, 2, 2, 1}
+		if target.verify(outreg) {
+			fmt.Println(names[i], outreg)
+		}
+
+	}
+
+}
+
+func check(inreg _registers, outreg _registers, op _instr) map[string]_registers {
+	m := make(map[string]_registers)
+
+	names := []string{"addr", "addi", "mulr", "muli",
+		"banr", "bani", "borr", "bori",
+		"seti", "setr", "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"}
+	todos := []ioper{addr, addi, mulr, muli, banr, bani, borr, bori,
+		seti, setr, gtir, gtri, gtrr, eqir, eqri, eqrr}
+	for i := range todos {
+		// make a copy of inreg
+		m[names[i]] = todos[i](inreg, op)
+	}
+	return m
+}
+
+func part1() {
+	filebytes := readfile("input-samples")
+	for i := range filebytes {
+		// who knows if this works
+		if filebytes[i] == '\r' {
+			filebytes[i] = ' '
+		}
+	}
+	filestring := string(filebytes)
+	lines := strings.Split(filestring, "\n")
+	for i := range lines {
+		lines[i] = strings.Trim(lines[i], " \n")
+	}
+	var rr _registers
+	var aa _registers
+	var ii _instr
+	for i := range lines {
+		if strings.HasPrefix(lines[i], "Before:") {
+			fmt.Sscanf(lines[i],
+				"Before: [%d, %d, %d, %d]", &rr[0], &rr[1], &rr[2], &rr[3])
+		} else if strings.HasPrefix(lines[i], "After:") {
+			fmt.Sscanf(lines[i],
+				"After:  [%d, %d, %d, %d]", &aa[0], &aa[1], &aa[2], &aa[3])
+
+			// DO WORK HERE
+
+			check(rr, aa, ii)
+
+		} else {
+			if len(lines[i]) == 0 {
+				// ignore this screw EOL in windows
+			} else {
+				//fmt.Println("WUT?", lines[i])
+				fmt.Sscanf(lines[i],
+					"%d %d %d %d", &ii.opcode, &ii.a, &ii.b, &ii.output)
+			}
+		}
+	}
+}
+
 func main() {
-	examples()
+
+	inreg := _registers{3, 2, 1, 1}
+	outreg := _registers{}
+	m := check(inreg, outreg, _instr{9, 2, 1, 2})
+	res := make(map[_registers]int)
+	for k, v := range m {
+		fmt.Println(k, v)
+		res[v]++
+	}
+	fmt.Println(res)
 }
