@@ -269,7 +269,7 @@ func part1() {
 	}
 }
 
-func main() {
+func a() {
 
 	inreg := _registers{3, 2, 1, 1}
 	outreg := _registers{}
@@ -280,4 +280,18 @@ func main() {
 		res[v]++
 	}
 	fmt.Println(res)
+}
+func b() {
+	inreg := _registers{0, 1, 2, 1}
+	outreg := _registers{}
+	m := check(inreg, outreg, _instr{14, 1, 3, 3})
+	res := make(map[_registers]int)
+	for k, v := range m {
+		fmt.Println(k, v)
+		res[v]++
+	}
+	fmt.Println(res)
+}
+func main() {
+	b()
 }
