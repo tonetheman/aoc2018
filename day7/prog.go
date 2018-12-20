@@ -141,8 +141,8 @@ func replacePointer(src _HeadPointer, heads *[]_HeadPointer) {
 }
 
 func getinstructions() []instr {
-	//filebytes := readfile("example-input")
-	filebytes := readfile("input")
+	filebytes := readfile("example-input")
+	//filebytes := readfile("input")
 	filestring := string(filebytes)
 	filelines := strings.Split(filestring, "\n")
 	var instructions = make([]instr, 0)
@@ -287,6 +287,32 @@ func findNonBusyWorker(w []_worker) int {
 	return -1
 }
 
+func computeTime(s string) int {
+	cc := rune(s[0])
+	return int(cc) - 64
+}
+
+type _package struct {
+	letter    string
+	remaining int
+}
+
+/* stuff below is needed for sort in golang */
+type _bypack []_package
+
+func (s _bypack) Len() int {
+	return len(s)
+}
+func (s _bypack) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+// this method is really the key the other
+// two are boiler plate
+func (s _bypack) Less(i, j int) bool {
+	return s[i].letter < s[j].letter
+}
+
 func part2() {
 	instructions := getinstructions()
 
@@ -341,7 +367,8 @@ func part2() {
 
 	// current time
 	second := 0
-	workers := make([]_worker, 5)
+	_wcount := 2 // number of workers
+	workers := make([]_worker, _wcount)
 	// now find all zero in degree map
 	count = 0
 	res := make([]string, 0)
@@ -349,10 +376,11 @@ func part2() {
 		// make a new array to hold the choices
 		// we can get more than one
 		// and in that case we need to use lexographic sort
-		holdszeros := make([]string, 0)
+		holdszeros := make([]_package, 0)
 		for k, v := range degreemap {
 			if v == 0 {
-				holdszeros = append(holdszeros, k)
+				t := computeTime(k)
+				holdszeros = append(holdszeros, _package{k, t})
 			}
 		}
 		if len(holdszeros) == 0 {
@@ -360,15 +388,21 @@ func part2() {
 			break
 		}
 		// sort the choices
-		sort.Strings(holdszeros)
+		//sort.Strings(holdszeros)
+		sort.Sort(_bypack(holdszeros))
 		fmt.Println(count, "choices", holdszeros)
+		fmt.Println("len of holdszeros", len(holdszeros))
+
+		// TODO: we have _wcount workers
+		// WHAT TO DO
+
 		// the choice for this round is the guy in index 0
 		// mark him out of the game
-		degreemap[holdszeros[0]] = -1
+		degreemap[holdszeros[0].letter] = -1
 		// put him in the result
-		res = append(res, holdszeros[0])
+		res = append(res, holdszeros[0].letter)
 		// get pointer, needed to mark children
-		_ptr, ok := findHeadPointer(holdszeros[0], heads)
+		_ptr, ok := findHeadPointer(holdszeros[0].letter, heads)
 		if ok != nil {
 			fmt.Println("ERR: could not find pointer")
 			break
@@ -405,5 +439,5 @@ func part2() {
 }
 
 func main() {
-	part1()
+	part2()
 }

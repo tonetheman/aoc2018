@@ -35,8 +35,23 @@ func (g *_grid) get(row, col int) byte {
 	return g[row*_size+col]
 }
 func (g *_grid) survey(row, col int) map[byte]int {
-	var m map[byte]int
-
+	debug := false
+	if row == 0 && col == 0 {
+		debug = true
+	}
+	m := make(map[byte]int)
+	offsets := []_p{{-1, -1}, {-1, 0}, {-1, 1}}
+	for i := range offsets {
+		o := offsets[i]
+		if row+o.offsetrow >= 0 && row+o.offsetrow < _size {
+			if col+o.offsetcol >= 0 && col+o.offsetcol < _size {
+				if debug {
+					fmt.Println(row, col, row+o.offsetrow, col+o.offsetcol)
+				}
+				m[g.get(row+o.offsetrow, col+o.offsetcol)]++
+			}
+		}
+	}
 	return m
 }
 
@@ -45,6 +60,9 @@ func (g *_grid) process() {
 		for j := 0; j < _size; j++ {
 			val := g.get(i, j)
 			sres := g.survey(i, j)
+			if i == 0 && j == 0 {
+				fmt.Println(sres)
+			}
 			if val == 1 { // open
 				if sres[1] >= 3 {
 					// change
