@@ -390,15 +390,28 @@ func part2() {
 		// sort the choices
 		//sort.Strings(holdszeros)
 		sort.Sort(_bypack(holdszeros))
-		fmt.Println(count, "choices", holdszeros)
-		fmt.Println("len of holdszeros", len(holdszeros))
+		workAvailable := len(holdszeros) > 0
 
+		fmt.Println("second", second, count, "choices", holdszeros)
+		fmt.Println("second", second, "len of holdszeros", len(holdszeros))
+		fmt.Println("second", second, "work avail", workAvailable)
 		// TODO: we have _wcount workers
 		// WHAT TO DO
+		for wi := 0; wi < _wcount; wi++ {
+			// if worker has nothing to do
+			// give him work if possible?
+			currentWorker := workers[wi]
+			if !currentWorker.busy {
+				// not busy if possible give him work
+				if workAvailable {
+					// the choice for this round is the guy in index 0
+					// mark him out of the game
+					degreemap[holdszeros[0].letter] = -1
+					currentWorker.choice = holdszeros[0].letter
+				}
+			}
+		}
 
-		// the choice for this round is the guy in index 0
-		// mark him out of the game
-		degreemap[holdszeros[0].letter] = -1
 		// put him in the result
 		res = append(res, holdszeros[0].letter)
 		// get pointer, needed to mark children
