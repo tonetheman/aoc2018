@@ -61,7 +61,7 @@ func part1() {
 			"pos=<%d,%d,%d>, r=%d",
 			&x, &y, &z, &r)
 		d := dist3(lrx, lry, lrz, x, y, z)
-		fmt.Println("dist calc", i, d)
+		//fmt.Println("dist calc", i, d)
 		if d <= lrr {
 			in_range_count++
 		}
@@ -70,7 +70,78 @@ func part1() {
 
 }
 
-func main() {
-	part1()
+func part2() {
+	//filebytes := readfile("example2-input")
+	filebytes := readfile("input")
+	filestring := string(filebytes)
+	filelines := strings.Split(filestring, "\n")
+	//fmt.Println(filelines)
+	// find boundaries
+	mx := -1
+	my := -1
+	mz := -1
+	for i := range filelines {
+		var x, y, z, r int
+		fmt.Sscanf(filelines[i],
+			"pos=<%d,%d,%d>, r=%d",
+			&x, &y, &z, &r)
+		//fmt.Println(x, y, z)
+		if x > mx {
+			mx = x
+		}
+		if y > my {
+			my = y
+		}
+		if z > mz {
+			mz = z
+		}
+	}
+	fmt.Println("largest", mx, my, mz)
 
+	type _point struct {
+		x, y, z, r int
+	}
+	var points = make([]_point, 0)
+	for i := range filelines {
+		var x, y, z, r int
+		fmt.Sscanf(filelines[i],
+			"pos=<%d,%d,%d>, r=%d",
+			&x, &y, &z, &r)
+		points = append(points, _point{x, y, z, r})
+	}
+	// we know index 938 is the guy
+	var lx, ly, lz, lr int
+	fmt.Sscanf(filelines[938],
+		"pos=<%d,%d,%d>, r=%d",
+		&lx, &ly, &lz, &lr)
+	fmt.Println("dude", lx, ly, lz, lr)
+	for i := lx - lr; i <= lx+lr; i++ {
+		for j := ly - lr; j <= ly+lr; j++ {
+			for k := lz - lr; k <= lz+lr; k++ {
+
+				// look at every point
+				// determine the number of bots in
+				// range of this point
+				in_range := 0
+				for ii := range points {
+					p := points[ii]
+					d := dist3(i, j, k, p.x, p.y, p.z)
+					//fmt.Println(i, j, k, r, d, (d <= r))
+					if d <= p.r {
+						in_range++
+					}
+				}
+				if in_range > 3 {
+					fmt.Println("!!!!this point",
+						i, j, k, in_range)
+				}
+
+			}
+		}
+	}
+}
+
+func main() {
+	//part1()
+	part2()
 }
